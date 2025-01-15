@@ -18,6 +18,18 @@ is($blio->template_dir, 'tt', 'reads the value from config');
 
 is($blio->template_configuration->{WRAPPER}, 'w2.tt', 'reads configuration from config');
 
-is($blio->tt->service->{WRAPPER}[0], 'w2.tt', 'configuration overrides defaults');
+{
+    require Template;
+    my $original_new = Template->can('new');
+    my $wrapper;
+    local *Template::new = sub {
+        my ($class, $arg) = @_;
+        $wrapper = $arg->{WRAPPER};
+        $original_new->($class, $arg)
+    };
+    *Template::new = *Template::new; # Not used only once.
+    $blio->tt;
+    is($wrapper, 'w2.tt', 'configuration overrides defaults');
+}
 
 done_testing();
