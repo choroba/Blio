@@ -16,4 +16,8 @@ my $blio = Blio->new_with_config(
 ok($blio, 'instantiates');
 is($blio->template_dir, 'tt', 'reads the value from config');
 
+is($blio->template_configuration->{WRAPPER}, 'w2.tt', 'reads configuration from config');
+
+is($blio->tt->service->{WRAPPER}[0], 'w2.tt', 'configuration overrides defaults');
+
 done_testing();
